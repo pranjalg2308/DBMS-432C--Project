@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogInActivity">
+    tools:context="com.kalabhedia.urbanclapclone.ServiceActivity">
 
     <fragment
-        android:id="@+id/credential_fragment"
+        android:id="@+id/serviceFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 
 </FrameLayout>

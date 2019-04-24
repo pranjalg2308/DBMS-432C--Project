@@ -1,5 +1,6 @@
 package com.kalabhedia.urbanclapclone;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -12,15 +13,18 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.kalabhedia.urbanclapclone.Utils.CredentialsUtil;
 
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
     private NavController navController;
     private ActionBar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkuserLogIn();
         setContentView(R.layout.activity_main);
         toolbar = getSupportActionBar();
         setUpNavigationDrawer();
@@ -55,12 +59,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        navController.popBackStack(R.id.homeFragment,false);
+        navController.popBackStack(R.id.homeFragment, false);
         bottomNavigationView.setSelectedItemId(R.id.nav_bar_home);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(navController, (DrawerLayout) null);
+    }
+
+    private void checkuserLogIn() {
+        if (!new CredentialsUtil().isUserLogged(getApplicationContext())) {
+            Intent intent = new Intent(this, LogInActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

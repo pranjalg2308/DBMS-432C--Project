@@ -1,4 +1,4 @@
-package com.kalabhedia.urbanclapclone;
+package com.kalabhedia.urbanclapcloneclient;
 
 import org.junit.Test;
 

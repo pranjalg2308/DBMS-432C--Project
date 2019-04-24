@@ -1,4 +1,4 @@
-package com.kalabhedia.urbanclapclone;
+package com.kalabhedia.urbanclapcloneclient;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.kalabhedia.urbanclapclone", appContext.getPackageName());
+        assertEquals("com.kalabhedia.urbanclapcloneclient", appContext.getPackageName());
     }
 }
