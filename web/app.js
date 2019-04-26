@@ -169,7 +169,7 @@ app.get('/api/services/:id', function(req, res){
           });
 })
 
-app.post("/api/orders", (req, res) => {
+app.post("/api/order", (req, res) => {
     const mUser_id = req.body.user_id;
     const mService_id = req.body.service_id;
     const mStart_time = parseInt(req.body.start_time);
@@ -203,10 +203,37 @@ app.post("/api/orders", (req, res) => {
 
 const TABLE_ORDERS = 'orders';
 const COL_USER_ID = 'user_id';
+app.get('/api/orders/', function(req, res){
+    const user_id = req.params.id;
+    query = `select * from ${TABLE_ORDERS}` ;
+    connection.execute(query, {}, (err, result) =>
+          {
+            if (err) {
+                console.error(err); 
+                res.send({"status": false}); 
+                return; 
+            }
+            orders = [];
+            cols = [];
+            result.metaData.forEach(col => {
+                cols.push(col.name);
+            });
+            len = cols.length;
+            result.rows.forEach(row => {
+                obj = {};
+                for(i = 0; i < len; i++) {
+                    obj[cols[i]] = row[i];
+                }
+                orders.push(obj);
+            });
+            res.json(orders);
+          });
+})
+
+
 app.get('/api/orders/:id', function(req, res){
     const user_id = req.params.id;
     query = `select * from ${TABLE_ORDERS} where ${COL_USER_ID} = '${user_id}'` ;
-    console.log(query);
     connection.execute(query, {}, (err, result) =>
           {
             if (err) {
@@ -302,6 +329,20 @@ app.post("/api/providers/login", (req, res) => {
     })   
 });
 
+app.post("/api/providers/checkUser", (req, res) => {
+    const user_id = req.body.user_id;
+    query = `select * from ${TABLE_SERVICE_PROVIDERS} where ${COL_USER_ID} = '${user_id}''`;
+    console.log(query)
+    connection.execute(query, { }, (err, result) => {
+        if (err) {
+            console.error(err); 
+            res.send({"status": "error"}); 
+            return; 
+        }
+        res.send({"status" : result.rows.length == 1});        
+    })   
+});
+
 
 app.post("/api/users/register", (req, res) => {
     const muser_id = req.body.user_id;
@@ -380,6 +421,22 @@ app.post("/api/providers/register", (req, res) => {
         }
         res.send({"status" : true});        
     })   
+});
+
+const TABLE_ADMINS = "admins";
+app.post("/api/admins/login", (req, res) => {
+    const user_id = req.body.user_id;
+    const password = req.body.password;
+    let flag = 0;
+    query1 = `select * from ${TABLE_ADMINS} inner join ${TABLE_USERS} on ${TABLE_ADMINS}.${COL_USER_ID} = ${TABLE_USERS}.${COL_USER_ID} where ${TABLE_USERS}.${COL_USER_ID} = '${user_id}' and ${TABLE_USERS}.${COL_PASSWORD} = '${password}'`;
+    connection.execute(query1, { }, (err, result) => {
+        if (err) {
+            console.error(err); 
+            res.send({"status": "error"}); 
+            return; 
+        }
+        res.send({"status" : result.rows.length == 1});     
+    });
 });
 
 
