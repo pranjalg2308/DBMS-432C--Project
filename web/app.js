@@ -55,9 +55,37 @@ app.get('/api/categories', function(req, res){
 })
 
 const TABLE_SERVICE_PROVIDERS = 'serviceProviders'; 
-app.get('/api/providers/:city', function(req, res){
+app.get('/api/providers/:city&:id', function(req, res){
     const city = req.params.city;
-    query = `select * from ${TABLE_SERVICE_PROVIDERS} where city = '${city}' order by rating desc` ;
+    const c_id = req.params.id;
+    query = `select * from ${TABLE_SERVICE_PROVIDERS} where city = '${city}' and category_id = '${c_id}' order by rating desc` ;
+    connection.execute(query, {}, (err, result) =>
+          {
+            if (err) { 
+                console.error(err); 
+                return; 
+            }
+            
+            providers = [];
+            cols = [];
+            result.metaData.forEach(col => {
+                cols.push(col.name);
+            });
+            len = cols.length;
+            result.rows.forEach(row => {
+                obj = {};
+                for(i = 0; i < len; i++) {
+                    obj[cols[i]] = row[i];
+                }
+                providers.push(obj);
+            });
+            res.json(providers);
+          });
+})
+
+app.get('/api/providers/:id', function(req, res){
+    const c_id = req.params.id;
+    query = `select * from ${TABLE_SERVICE_PROVIDERS} where user_id = '${c_id}'` ;
     connection.execute(query, {}, (err, result) =>
           {
             if (err) { 
@@ -136,6 +164,33 @@ app.get('/api/users', function(req, res){
           });
 })
 
+app.get('/api/users/:id', function(req, res){
+    const id = req.params.id;
+    query = `select * from ${TABLE_USERS} where user_id = '${id}'`;
+    connection.execute(query, {}, (err, result) =>
+          {
+            if (err) { 
+                console.error(err); 
+                return; 
+            }
+            
+            users = [];
+            cols = [];
+            result.metaData.forEach(col => {
+                cols.push(col.name);
+            });
+            len = cols.length;
+            result.rows.forEach(row => {
+                obj = {};
+                for(i = 0; i < len; i++) {
+                    obj[cols[i]] = row[i];
+                }
+                users.push(obj);
+            });
+            res.json(users);
+          });
+})
+
 const TABLE_SERVICES = 'services'; 
 const TABLE_SERVICE_LINKS = 'serviceLinks';
 const COL_SERVICE_ID = 'service_id';
@@ -146,6 +201,32 @@ app.get('/api/services/:id', function(req, res){
             inner join ${TABLE_SERVICE_LINKS} 
             on ${TABLE_SERVICES}.${COL_SERVICE_ID} = ${TABLE_SERVICE_LINKS}.${COL_SERVICE_ID}
             where ${TABLE_SERVICE_LINKS}.${COL_PROVIDER_ID} = '${provider_id}'` ;
+    connection.execute(query, {}, (err, result) =>
+          {
+            if (err) { 
+                console.error(err); 
+                return; 
+            }
+            services = [];
+            cols = [];
+            result.metaData.forEach(col => {
+                cols.push(col.name);
+            });
+            len = cols.length;
+            result.rows.forEach(row => {
+                obj = {};
+                for(i = 0; i < len; i++) {
+                    obj[cols[i]] = row[i];
+                }
+                services.push(obj);
+            });
+            res.json(services);
+          });
+})
+
+app.get('/api/services/', function(req, res){
+    const provider_id = req.params.id;
+    query = `select * from ${TABLE_SERVICES}` ;
     connection.execute(query, {}, (err, result) =>
           {
             if (err) { 
@@ -314,6 +395,20 @@ app.post("/api/user/login", (req, res) => {
     })   
 });
 
+app.post("/api/user/checkUser", (req, res) => {
+    const user_id = req.body.user_id;
+    query = `select * from ${TABLE_USERS} where ${COL_USER_ID} = '${user_id}'`;
+    console.log(query)
+    connection.execute(query, { }, (err, result) => {
+        if (err) {
+            console.error(err); 
+            res.send({"status": "error"}); 
+            return; 
+        }
+        res.send({"status" : result.rows.length == 1});        
+    })   
+});
+
 app.post("/api/providers/login", (req, res) => {
     const user_id = req.body.user_id;
     const password = req.body.password;
@@ -427,7 +522,6 @@ const TABLE_ADMINS = "admins";
 app.post("/api/admins/login", (req, res) => {
     const user_id = req.body.user_id;
     const password = req.body.password;
-    let flag = 0;
     query1 = `select * from ${TABLE_ADMINS} inner join ${TABLE_USERS} on ${TABLE_ADMINS}.${COL_USER_ID} = ${TABLE_USERS}.${COL_USER_ID} where ${TABLE_USERS}.${COL_USER_ID} = '${user_id}' and ${TABLE_USERS}.${COL_PASSWORD} = '${password}'`;
     connection.execute(query1, { }, (err, result) => {
         if (err) {
@@ -436,6 +530,37 @@ app.post("/api/admins/login", (req, res) => {
             return; 
         }
         res.send({"status" : result.rows.length == 1});     
+    });
+});
+
+app.put("/api/changePassword/:id", (req, res) => {
+    const mPassword = req.body.password;
+    const mId = req.params.id;
+    query = "BEGIN change_password(:id, :pass); END;";
+    connection.execute(query, {
+        id: mId,
+        pass: mPassword
+     }, (err, result) => {
+        if (err) {
+            console.error(err); 
+            res.send({"status": "error"}); 
+            return; 
+        }
+        res.send({"status" : true});     
+    });
+});
+
+app.delete("/api/provider/:id", (req, res) => {
+    const mId = req.params.id;
+
+    query = "BEGIN delete_provider(:id); END;";
+    connection.execute(query, { id: mId }, (err, result) => {
+        if (err) {
+            console.error(err); 
+            res.send({"status": "error"}); 
+            return; 
+        }
+        res.send({"status" : true});     
     });
 });
 

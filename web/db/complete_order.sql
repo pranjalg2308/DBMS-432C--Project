@@ -1,4 +1,3 @@
--- Work in progress
 create or replace procedure complete_order (id in varchar2, r number)
 is
     avg_rating number(2,1);
