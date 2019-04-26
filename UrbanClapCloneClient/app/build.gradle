@@ -1,10 +1,9 @@
 apply plugin: 'com.android.application'
-apply plugin: "androidx.navigation.safeargs"
 
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.kalabhedia.urbanclapclone"
+        applicationId "com.kalabhedia.urbanclapcloneclient"
         minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
@@ -21,14 +20,29 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0-alpha03'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha03'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0'
+    implementation 'android.arch.navigation:navigation-ui:1.0.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.0.0"
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    androidTestImplementation "android.arch.persistence.room:testing:1.1.1"
+
+    // Lifecycle components
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'com.google.android.material:material:1.0.0'
-    implementation "androidx.navigation:navigation-fragment:2.1.0-alpha02"
-    implementation "androidx.navigation:navigation-ui:2.1.0-alpha02"
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+
+    //Retrofit components
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
 }
