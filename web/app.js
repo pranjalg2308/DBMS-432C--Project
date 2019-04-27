@@ -255,6 +255,7 @@ app.post("/api/order", (req, res) => {
     const mService_id = req.body.service_id;
     const mStart_time = parseInt(req.body.start_time);
     const mDuration = parseInt(req.body.duration);
+    const mOrder_id = uuid.v4();
     const mCompleted = 0;
     const mDeleted = 0; 
 
