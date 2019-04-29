@@ -285,9 +285,10 @@ app.post("/api/order", (req, res) => {
 
 const TABLE_ORDERS = 'orders';
 const COL_USER_ID = 'user_id';
-app.get('/api/orders/', function(req, res){
+app.get('/api/orders/:id', function(req, res){
     const user_id = req.params.id;
-    query = `select * from ${TABLE_ORDERS}` ;
+    query = `select * from ${TABLE_ORDERS} inner join ${TABLE_SERVICES} on ${TABLE_ORDERS}.${COL_SERVICE_ID} = ${TABLE_SERVICES}.${COL_SERVICE_ID} where ${TABLE_ORDERS}.${COL_USER_ID} = '${user_id}'` ;
+    console.log(query);
     connection.execute(query, {}, (err, result) =>
           {
             if (err) {
@@ -313,9 +314,9 @@ app.get('/api/orders/', function(req, res){
 })
 
 
-app.get('/api/orders/:id', function(req, res){
+app.get('/api/orders/', function(req, res){
     const user_id = req.params.id;
-    query = `select * from ${TABLE_ORDERS} where ${COL_USER_ID} = '${user_id}'` ;
+    query = `select * from ${TABLE_ORDERS}` ;
     connection.execute(query, {}, (err, result) =>
           {
             if (err) {
@@ -389,7 +390,7 @@ app.post("/api/user/login", (req, res) => {
     connection.execute(query, { }, (err, result) => {
         if (err) {
             console.error(err); 
-            res.send({"status": "error"}); 
+            res.send({"status": false}); 
             return; 
         }
         res.send({"status" : result.rows.length == 1});        
@@ -403,7 +404,7 @@ app.post("/api/user/checkUser", (req, res) => {
     connection.execute(query, { }, (err, result) => {
         if (err) {
             console.error(err); 
-            res.send({"status": "error"}); 
+            res.send({"status": false}); 
             return; 
         }
         res.send({"status" : result.rows.length == 1});        
@@ -418,7 +419,7 @@ app.post("/api/providers/login", (req, res) => {
     connection.execute(query, { }, (err, result) => {
         if (err) {
             console.error(err); 
-            res.send({"status": "error"}); 
+            res.send({"status": false}); 
             return; 
         }
         res.send({"status" : result.rows.length == 1});        
@@ -474,7 +475,7 @@ app.post("/api/users/register", (req, res) => {
      }, (err, result) => {
         if (err) {
             console.error(err); 
-            res.send({"status": "error"}); 
+            res.send({"status": false}); 
             return; 
         }
         res.send({"status" : true});        
@@ -512,7 +513,7 @@ app.post("/api/providers/register", (req, res) => {
      }, (err, result) => {
         if (err) {
             console.error(err); 
-            res.send({"status": "error"}); 
+            res.send({"status": false}); 
             return; 
         }
         res.send({"status" : true});        
@@ -527,7 +528,7 @@ app.post("/api/admins/login", (req, res) => {
     connection.execute(query1, { }, (err, result) => {
         if (err) {
             console.error(err); 
-            res.send({"status": "error"}); 
+            res.send({"status": false}); 
             return; 
         }
         res.send({"status" : result.rows.length == 1});     
@@ -544,7 +545,7 @@ app.put("/api/changePassword/:id", (req, res) => {
      }, (err, result) => {
         if (err) {
             console.error(err); 
-            res.send({"status": "error"}); 
+            res.send({"status": false}); 
             return; 
         }
         res.send({"status" : true});     
@@ -558,7 +559,7 @@ app.delete("/api/provider/:id", (req, res) => {
     connection.execute(query, { id: mId }, (err, result) => {
         if (err) {
             console.error(err); 
-            res.send({"status": "error"}); 
+            res.send({"status": false}); 
             return; 
         }
         res.send({"status" : true});     
