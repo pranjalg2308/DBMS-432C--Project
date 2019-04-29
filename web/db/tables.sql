@@ -74,8 +74,8 @@ create table orders
     order_id varchar2(36),
     user_id varchar(20),
     service_id varchar(20),
-    date_of_order date not null,
-    start_time long not null;
+    date_of_order number(11, 0) not null,
+    start_time number(11, 0) not null;
     completed number(1, 0) not null check (completed = 0 or completed = 1),
     rating number(2, 1),
     duration number(2, 0) check(duration > 0 and duration <= 24),

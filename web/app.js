@@ -254,14 +254,12 @@ app.post("/api/order", (req, res) => {
     const mUser_id = req.body.user_id;
     const mService_id = req.body.service_id;
     const mStart_time = parseInt(req.body.start_time);
+    const mDate_of_order = parseInt(req.body.start_time);
     const mDuration = parseInt(req.body.duration);
     const mOrder_id = uuid.v4();
     const mCompleted = 0;
     const mDeleted = 0; 
 
-    // Logic for getting date
-    const mDate_of_order = new Date(mStart_time);
-    // console.log(`${mOrder_id} ${mStart_time} ${mDate_of_order}`);
     query = "BEGIN make_order(:order_id, :user_id, :service_id, :date_of_order, :start_time, :duration, :completed, :deleted); END;";
 
     connection.execute(query, {
