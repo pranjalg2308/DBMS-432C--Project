@@ -18,13 +18,13 @@ import com.kalabhedia.urbanclapclone.Utils.CredentialsUtil;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-    private NavController navController;
+
     private ActionBar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkuserLogIn();
+        checkUserLogIn();
         setContentView(R.layout.activity_main);
         toolbar = getSupportActionBar();
         setUpNavigationDrawer();
@@ -32,22 +32,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpNavigationDrawer() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        navController = Navigation.findNavController(this, R.id.my_nav_host_fragment);
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainActivityFrameLayout,new HomeFragment()).commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 if (bottomNavigationView.getSelectedItemId() != menuItem.getItemId()) {
                     switch (menuItem.getItemId()) {
                         case R.id.nav_bar_home:
-                            navController.navigate(R.id.homeFragment);
-                            navController.popBackStack(R.id.homeFragment, false);
+                            getSupportFragmentManager().beginTransaction().replace(R.id.mainActivityFrameLayout,new HomeFragment()).commit();
                             break;
                         case R.id.nav_bar_bookings:
-                            navController.navigate(R.id.bookingFragment);
+                            getSupportFragmentManager().beginTransaction().replace(R.id.mainActivityFrameLayout,new BookingFragment()).commit();
                             break;
                         case R.id.nav_bar_profile:
-                            navController.navigate(R.id.profileFragment);
+                            getSupportFragmentManager().beginTransaction().replace(R.id.mainActivityFrameLayout,new ProfileFragment()).commit();
+
                             break;
                     }
                 }
@@ -56,20 +55,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        navController.popBackStack(R.id.homeFragment, false);
-        bottomNavigationView.setSelectedItemId(R.id.nav_bar_home);
-    }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(navController, (DrawerLayout) null);
-    }
 
-    private void checkuserLogIn() {
-        if (!new CredentialsUtil().isUserLogged(getApplicationContext())) {
+    private void checkUserLogIn() {
+        if (!CredentialsUtil.isUserLogged(getApplicationContext())) {
             Intent intent = new Intent(this, LogInActivity.class);
             startActivity(intent);
             finish();
