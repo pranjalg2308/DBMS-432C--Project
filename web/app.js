@@ -285,7 +285,7 @@ const TABLE_ORDERS = 'orders';
 const COL_USER_ID = 'user_id';
 app.get('/api/orders/:id', function(req, res){
     const user_id = req.params.id;
-    query = `select * from ${TABLE_ORDERS} inner join ${TABLE_SERVICES} on ${TABLE_ORDERS}.${COL_SERVICE_ID} = ${TABLE_SERVICES}.${COL_SERVICE_ID} where ${TABLE_ORDERS}.${COL_USER_ID} = '${user_id}'` ;
+    query = `select * from ${TABLE_ORDERS} inner join ${TABLE_SERVICES} on ${TABLE_ORDERS}.${COL_SERVICE_ID} = ${TABLE_SERVICES}.${COL_SERVICE_ID} where ${TABLE_ORDERS}.${COL_USER_ID} = '${user_id}' order by date_of_order desc` ;
     console.log(query);
     connection.execute(query, {}, (err, result) =>
           {
@@ -540,6 +540,36 @@ app.put("/api/changePassword/:id", (req, res) => {
     connection.execute(query, {
         id: mId,
         pass: mPassword
+     }, (err, result) => {
+        if (err) {
+            console.error(err); 
+            res.send({"status": false}); 
+            return; 
+        }
+        res.send({"status" : true});     
+    });
+});
+
+app.put("/api/provider/:id", (req, res) => {
+    const mUser_id = req.params.id;
+    const mPassword = req.body.password;
+    const mEmail = req.body.email;
+    const mCompanyName = req.body.companyName;
+    const mContactNo = req.body.contactNo;
+    const mAddLine1 = req.body.addLine1;
+    const mAddLine2 = req.body.addLine2;
+    const mCity = req.body.city;
+
+    query = "BEGIN update_provier(:id, :pass, :mail, :cName, :cNo, :aLine1, :aLine2, :c); END;";
+    connection.execute(query, {
+        id: mUser_id,
+        pass: mPassword,
+        mail: mEmail,
+        cName: mCompanyName,
+        cNo: mContactNo,
+        aLine1: mAddLine1,
+        aLine2: mAddLine2,
+        c: mCity
      }, (err, result) => {
         if (err) {
             console.error(err); 
