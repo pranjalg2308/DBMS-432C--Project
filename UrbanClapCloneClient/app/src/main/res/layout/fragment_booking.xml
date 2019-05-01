@@ -5,11 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".BookingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bookingRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Booking Fragment" />
+        tools:listitem="@layout/booking_layout_view">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>
